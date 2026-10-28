@@ -1,0 +1,92 @@
+:root {
+  --bg: #f7f6f2; --card: #ffffff; --borda: #e4e2da; --texto: #1f1e1b; --texto2: #6b6962; --link: #2f6fb5;
+  --tema: #c8912a; --tema-bg: #f6ead2; --biblia: #3d7fcf; --livros: #5a9443; --devo: #8a6ad0; --inicio: #1f1e1b;
+  --aresta: rgba(40, 40, 40, .10); --resumo: #a86c12; --marca: #fbf1d9; --erro: #b42318;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #171716; --card: #1e1e1d; --borda: #333331; --texto: #f1efe9; --texto2: #a9a7a0; --link: #6ea8e8;
+    --tema: #e0b44b; --tema-bg: #3a2a0e; --biblia: #5f97df; --livros: #6fae5c; --devo: #9d80dc; --inicio: #ffffff;
+    --aresta: rgba(255, 255, 255, .07); --resumo: #e0a33a; --marca: #3a2f17; --erro: #f97066;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #171716; --card: #1e1e1d; --borda: #333331; --texto: #f1efe9; --texto2: #a9a7a0; --link: #6ea8e8;
+  --tema: #e0b44b; --tema-bg: #3a2a0e; --biblia: #5f97df; --livros: #6fae5c; --devo: #9d80dc; --inicio: #ffffff;
+  --aresta: rgba(255, 255, 255, .07); --resumo: #e0a33a; --marca: #3a2f17; --erro: #f97066;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box }
+body { margin: 0; background: var(--bg); color: var(--texto); font: 16px/1.6 Inter, system-ui, sans-serif }
+main { max-width: 720px; margin: 0 auto; padding: 56px 16px 64px }
+a { color: var(--link); text-decoration: none }
+a:hover { text-decoration: underline }
+button { font: inherit; color: var(--texto); background: transparent; border: 1px solid var(--borda); border-radius: 10px; cursor: pointer }
+button:hover { background: var(--card) }
+
+.alternar-tema { position: absolute; top: 14px; right: 16px; display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--texto2); padding: 6px 12px; border-radius: 999px }
+.alternar-tema svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; display: none }
+.alternar-tema[data-modo="auto"] .ic-auto, .alternar-tema[data-modo="claro"] .ic-claro, .alternar-tema[data-modo="escuro"] .ic-escuro { display: block }
+
+h1 { font: 500 40px/1.1 Lora, Georgia, serif; text-align: center; margin: 0 }
+h1 a { color: inherit; text-decoration: none }
+.sub { color: var(--texto2); text-align: center; margin: 8px 0 0 }
+
+.grafo { position: relative; margin: 24px -16px 4px; height: 380px }
+.grafo canvas { width: 100%; height: 100%; display: block }
+.dica { position: absolute; pointer-events: none; background: var(--card); border: 1px solid var(--borda); border-radius: 6px; padding: 3px 8px; font-size: 12px; white-space: nowrap; display: none }
+.legenda { display: flex; flex-wrap: wrap; gap: 6px 16px; justify-content: center; font-size: 12px; color: var(--texto2) }
+.legenda i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; vertical-align: 1px }
+
+form { display: flex; gap: 12px; margin: 32px 0 12px }
+input { flex: 1; min-width: 0; font: inherit; font-size: 18px; color: var(--texto); background: var(--card); border: 1px solid var(--borda); border-radius: 10px; padding: 12px 16px }
+input:focus { outline: 2px solid var(--link); outline-offset: -1px }
+form button { font-size: 17px; padding: 0 20px; white-space: nowrap }
+.erro { color: var(--erro); font-size: 14px; margin: -4px 0 12px }
+
+.temas { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 15px; color: var(--texto2); margin-bottom: 20px }
+.chip { background: var(--tema-bg); color: var(--tema); border: 1px solid transparent; border-radius: 999px; padding: 3px 14px; white-space: nowrap; font-size: 15px }
+.chip:hover { background: var(--tema-bg); border-color: var(--tema) }
+.chip.rel { background: transparent; border-color: var(--borda); color: var(--texto2) }
+.chip.rel:hover { border-color: var(--texto2) }
+.chip.atual { border-color: var(--tema) }
+
+.card { background: var(--card); border: 1px solid var(--borda); border-radius: 14px; padding: 20px 24px; margin-bottom: 14px }
+.intro { font-size: 17px; line-height: 1.75; margin: 0 }
+h2 { font-size: 17px; font-weight: 500; color: var(--texto2); margin: 28px 0 12px; display: flex; align-items: center; gap: 8px }
+h2 i { width: 9px; height: 9px; border-radius: 50%; display: inline-block }
+blockquote { margin: 0 0 10px; font: 19px/1.7 Lora, Georgia, serif }
+blockquote sup { font: 11px Inter, sans-serif; color: var(--texto2); margin-right: 2px }
+.ref { font-size: 14px }
+.trecho { margin: 0 0 10px; font-size: 16px; line-height: 1.75 }
+.meta { font-size: 14px; color: var(--texto2) }
+.meta .resumo { color: var(--resumo) }
+.mais { font-size: 14px; padding: 6px 14px; margin-bottom: 8px }
+.fontes { font-size: 15px; line-height: 1.9; padding-left: 20px; margin: 0 }
+.fontes li::marker { color: var(--texto2) }
+.aviso { color: var(--texto2); font-size: 15px }
+
+footer { margin-top: 56px; text-align: center; font-size: 13px; line-height: 1.8; color: var(--texto2) }
+
+dialog { width: min(680px, calc(100% - 32px)); max-height: 85vh; padding: 0; border: 1px solid var(--borda); border-radius: 14px; background: var(--card); color: var(--texto) }
+dialog::backdrop { background: rgba(0, 0, 0, .45) }
+dialog .cab { position: sticky; top: 0; display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; background: var(--card); border-bottom: 1px solid var(--borda) }
+dialog h3 { margin: 0; font: 500 20px Lora, Georgia, serif }
+dialog .cab button { border: none; font-size: 18px; padding: 4px 10px }
+#cap-texto { padding: 12px 20px 24px; font: 17px/1.75 Lora, Georgia, serif }
+#cap-texto p { margin: 0 0 8px; padding: 2px 6px; border-radius: 6px }
+#cap-texto p.marcado { background: var(--marca) }
+#cap-texto sup { font: 11px Inter, sans-serif; color: var(--texto2); margin-right: 4px }
+
+@media (max-width: 520px) {
+  main { padding-top: 64px }
+  h1 { font-size: 32px }
+  form { flex-direction: column }
+  form button { padding: 12px }
+  .grafo { height: 300px }
+  blockquote { font-size: 17px }
+  .card { padding: 16px 18px }
+}

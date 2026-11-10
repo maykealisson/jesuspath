@@ -1,5 +1,17 @@
 // "?v=..." posto pelo site.py no index.html; repassado aos dados para o cache nunca misturar versões
 const VERSAO = new URL(document.currentScript.src).search;
+// dados em dados/<nome>.js (window.THEPATH.<nome>), carregados por <script> e não fetch de .json,
+// que algumas redes e antivírus bloqueiam
+function carregar(nome) {
+  return new Promise((ok, falha) => {
+    if (window.THEPATH?.[nome]) return ok(window.THEPATH[nome]);
+    const s = document.createElement("script");
+    s.src = `dados/${nome}.js${VERSAO}`;
+    s.onload = () => window.THEPATH?.[nome] ? ok(window.THEPATH[nome]) : falha(new Error(nome));
+    s.onerror = () => falha(new Error(nome));
+    document.head.append(s);
+  });
+}
 // ThePath — busca no navegador sobre os dados gerados por _scripts/site.py
 const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
@@ -52,7 +64,7 @@ function palavrasChave(q) {
 }
 
 async function carregarBiblia() {
-  if (!BIBLIA) BIBLIA = await fetch(`dados/biblia.json${VERSAO}`).then(r => r.json());
+  if (!BIBLIA) BIBLIA = await carregar("biblia");
   return BIBLIA;
 }
 
@@ -250,8 +262,9 @@ function grafo(G) {
 }
 
 // ---------- início ----------
-fetch(`dados/temas.json${VERSAO}`).then(r => r.json()).then(t => {
+carregar("temas").then(t => {
   TEMAS = t.map(x => ({...x, rx: new RegExp(x.chave, "gi")}));
   rota();
 });
-fetch(`dados/grafo.json${VERSAO}`).then(r => r.json()).then(grafo);
+carregar("grafo").then(grafo)
+  .catch(() => { $("#total").textContent = "não foi possível carregar o grafo nesta rede"; });

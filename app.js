@@ -184,20 +184,20 @@ function grafo(G) {
   const cv = $("#grafo"), ctx = cv.getContext("2d"), dica = $("#dica");
   const cor = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
   const CORES = ["--inicio", "--tema", "--biblia", "--livros", "--devo"];
-  const nos = G.n.map(([nome, g]) => ({nome, g, grau: 0})), lig = [];
+  // posições já calculadas no build (site.py → layout_grafo.js)
+  const nos = G.n.map(([nome, g], i) => ({nome, g, grau: 0, x: G.p[2 * i], y: G.p[2 * i + 1]})), lig = [];
   for (let i = 0; i < G.e.length; i += 2) {
-    lig.push({source: G.e[i], target: G.e[i + 1]});
+    lig.push({source: nos[G.e[i]], target: nos[G.e[i + 1]]});
     nos[G.e[i]].grau++; nos[G.e[i + 1]].grau++;
   }
   nos.forEach(n => n.r = 1.2 + Math.sqrt(n.grau) * 0.55);
   $("#total").textContent = `${nos.length} notas · ${lig.length} ligações`;
 
-  const sim = d3.forceSimulation(nos)
-    .force("link", d3.forceLink(lig).distance(14).strength(0.25))
-    .force("carga", d3.forceManyBody().strength(-14).distanceMax(260))
-    .force("x", d3.forceX().strength(0.04)).force("y", d3.forceY().strength(0.04))
-    .alphaDecay(0.02).stop();
-  sim.tick(80);
+  function maisPerto(x, y, raio) {
+    let melhor = null, d2 = raio * raio;
+    for (const n of nos) { const d = (n.x - x) ** 2 + (n.y - y) ** 2; if (d < d2) { d2 = d; melhor = n; } }
+    return melhor;
+  }
 
   let W, H, k = 1, ox = 0, oy = 0, foco = null, viz = new Set();
   function medir() {
@@ -226,14 +226,13 @@ function grafo(G) {
     }
     ctx.globalAlpha = 1;
   }
-  sim.on("tick", desenhar);
-  medir(); desenhar(); sim.restart();
+  medir(); desenhar();
   addEventListener("resize", () => { medir(); desenhar(); });
   redesenharGrafo = desenhar;
 
   cv.addEventListener("mousemove", e => {
     const b = cv.getBoundingClientRect();
-    const n = sim.find((e.clientX - b.left - ox) / k, (e.clientY - b.top - oy) / k, 12 / k) || null;
+    const n = maisPerto((e.clientX - b.left - ox) / k, (e.clientY - b.top - oy) / k, 12 / k) || null;
     if (n === foco) return;
     foco = n;
     viz = new Set(foco ? lig.filter(l => l.source === foco || l.target === foco).map(l => l.source === foco ? l.target : l.source) : []);
@@ -253,4 +252,4 @@ fetch("dados/temas.json").then(r => r.json()).then(t => {
   TEMAS = t.map(x => ({...x, rx: new RegExp(x.chave, "gi")}));
   rota();
 });
-fetch("dados/grafo.json").then(r => r.json()).then(g => { if (window.d3) grafo(g); });
+fetch("dados/grafo.json").then(r => r.json()).then(grafo);

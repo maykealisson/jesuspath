@@ -1,3 +1,5 @@
+// "?v=..." posto pelo site.py no index.html; repassado aos dados para o cache nunca misturar versões
+const VERSAO = new URL(document.currentScript.src).search;
 // ThePath — busca no navegador sobre os dados gerados por _scripts/site.py
 const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
@@ -50,7 +52,7 @@ function palavrasChave(q) {
 }
 
 async function carregarBiblia() {
-  if (!BIBLIA) BIBLIA = await fetch("dados/biblia.json").then(r => r.json());
+  if (!BIBLIA) BIBLIA = await fetch(`dados/biblia.json${VERSAO}`).then(r => r.json());
   return BIBLIA;
 }
 
@@ -248,8 +250,8 @@ function grafo(G) {
 }
 
 // ---------- início ----------
-fetch("dados/temas.json").then(r => r.json()).then(t => {
+fetch(`dados/temas.json${VERSAO}`).then(r => r.json()).then(t => {
   TEMAS = t.map(x => ({...x, rx: new RegExp(x.chave, "gi")}));
   rota();
 });
-fetch("dados/grafo.json").then(r => r.json()).then(grafo);
+fetch(`dados/grafo.json${VERSAO}`).then(r => r.json()).then(grafo);

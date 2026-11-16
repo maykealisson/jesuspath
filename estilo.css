@@ -38,7 +38,16 @@ h1 a { color: inherit; text-decoration: none }
 .grafo { position: relative; margin: 24px -16px 4px; height: 380px }
 .grafo canvas { width: 100%; height: 100%; display: block }
 .dica { position: absolute; pointer-events: none; background: var(--card); border: 1px solid var(--borda); border-radius: 6px; padding: 3px 8px; font-size: 12px; white-space: nowrap; display: none }
-.legenda { display: flex; flex-wrap: wrap; gap: 6px 16px; justify-content: center; font-size: 12px; color: var(--texto2) }
+.grafo.orbitas { height: min(640px, calc(100vw + 16px)) }
+.visoes { display: flex; justify-content: center; gap: 4px; margin: 24px 0 -16px; position: relative; z-index: 1 }
+.visoes button { font-size: 12px; padding: 4px 14px; border-radius: 999px; color: var(--texto2) }
+.visoes button[aria-pressed="true"] { color: var(--texto); border-color: var(--texto2); background: var(--card) }
+.legenda { display: flex; flex-wrap: wrap; gap: 6px 8px; justify-content: center; align-items: center; font-size: 12px; color: var(--texto2) }
+.legenda button { font-size: 12px; color: var(--texto2); padding: 2px 10px; border-radius: 999px; border-color: transparent }
+.legenda button:hover { border-color: var(--borda) }
+.legenda button[aria-pressed="false"] { opacity: .45; text-decoration: line-through }
+.legenda button[aria-pressed="false"] i { background: transparent !important; box-shadow: inset 0 0 0 1px var(--texto2) }
+.legenda #total { margin-left: 8px }
 .legenda i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; vertical-align: 1px }
 
 form { display: flex; gap: 12px; margin: 32px 0 12px }
